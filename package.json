@@ -7,9 +7,9 @@
     "generate:keys": "node scripts/generate-keys.js",
     "test": "jest"
   },
-  "bin": {
-    "secure-transfer": "./bin/cli.js"
-  },
+ "bin": {
+  "secure-transfer": "./cli.js"
+},
   "keywords": [
     "encryption",
     "rsa",
