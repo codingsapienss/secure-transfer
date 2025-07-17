@@ -1,6 +1,6 @@
 {
   "name": "secure-transfer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Secure hybrid encryption (AES + RSA) for frontend-backend communication.",
   "main": "server.js",
   "scripts": {
@@ -8,8 +8,8 @@
     "test": "jest"
   },
   "bin": {
-  "secure-transfer": "./bin/cli.js"
-},
+    "secure-transfer": "./bin/cli.js"
+  },
   "keywords": [
     "encryption",
     "rsa",
