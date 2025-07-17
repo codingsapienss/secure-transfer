@@ -1,0 +1,29 @@
+{
+  "name": "secure-transfer",
+  "version": "1.0.0",
+  "description": "Secure hybrid encryption (AES + RSA) for frontend-backend communication.",
+  "main": "server.js",
+  "scripts": {
+    "generate:keys": "node scripts/generate-keys.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "encryption",
+    "rsa",
+    "aes",
+    "security",
+    "middleware",
+    "frontend",
+    "backend"
+  ],
+  "author": "Prashant Sharma",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "dotenv": "^16.6.1",
+    "node-forge": "^1.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
