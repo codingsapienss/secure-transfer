@@ -15,6 +15,14 @@ let _config = {
  * @param {string} options.passphrase - Passphrase for private key
  */
 function setupSecureTransfer({ keyDir, passphrase }) {
+    if (!keyDir || !passphrase) {
+        throw new Error(
+            `[secure-transfer] Missing required config.
+            - Received keyDir: ${keyDir}
+            - Received passphrase: ${passphrase}`
+        );
+    }
+
     const privateKeyPath = path.resolve(keyDir, 'private.pem');
     const publicKeyPath = path.resolve(keyDir, 'public.pem');
 
@@ -24,7 +32,6 @@ function setupSecureTransfer({ keyDir, passphrase }) {
         passphrase,
     };
 
-    // Generate keys if not exists
     generateKeys({
         privateKeyPath,
         publicKeyPath,
