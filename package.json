@@ -1,6 +1,6 @@
 {
   "name": "secure-transfer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Secure hybrid encryption (AES + RSA) for frontend-backend communication.",
   "main": "server.js",
   "scripts": {
