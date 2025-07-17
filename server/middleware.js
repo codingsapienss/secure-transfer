@@ -1,31 +1,42 @@
-const forge = require('node-forge');
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config();
+const fs = require('fs').promises;
+const crypto = require('crypto');
 
-const privateKeyPem = fs.readFileSync(path.resolve(process.env.PRIVATE_KEY_PATH), 'utf8');
-const privateKey = forge.pki.decryptRsaPrivateKey(privateKeyPem, process.env.SECURE_PASSPHRASE);
+/**
+ * Creates middleware with the given config
+ */
+function createMiddleware({ privateKeyPath, passphrase }) {
+    return async (req, res, next) => {
+        try {
+            const { encryptedData, encryptedSecretKey, iv } = req.body;
 
-function decryptMiddleware(req, res, next) {
-    try {
-        const { encryptedData, encryptedSecretKey, iv } = req.body;
-        if (!encryptedData || !encryptedSecretKey || !iv) {
-            return res.status(400).json({ error: 'Missing encrypted payload components' });
+            const privateKeyPem = await fs.readFile(privateKeyPath, 'utf8');
+            const secretKey = crypto.privateDecrypt(
+                {
+                    key: privateKeyPem,
+                    passphrase,
+                    padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+                },
+                Buffer.from(encryptedSecretKey, 'base64')
+            );
+
+            const decipher = crypto.createDecipheriv(
+                'aes-128-cbc',
+                secretKey,
+                Buffer.from(iv, 'base64')
+            );
+
+            let decrypted = decipher.update(Buffer.from(encryptedData, 'base64'));
+            decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+            req.body = JSON.parse(decrypted.toString('utf8'));
+            next();
+        } catch (err) {
+            console.error('Decryption failed:', err);
+            res.status(500).json({ message: 'Failed to decrypt data' });
         }
-
-        const aesKey = privateKey.decrypt(forge.util.decode64(encryptedSecretKey), 'RSA-OAEP');
-        const decipher = forge.cipher.createDecipher('AES-CBC', aesKey);
-        decipher.start({ iv: forge.util.decode64(iv) });
-        decipher.update(forge.util.createBuffer(forge.util.decode64(encryptedData)));
-        const success = decipher.finish();
-
-        if (!success) throw new Error('Decryption failed');
-
-        req.body = JSON.parse(decipher.output.toString());
-        next();
-    } catch (err) {
-        res.status(500).json({ error: `Decryption error: ${err.message}` });
-    }
+    };
 }
 
-module.exports = { decryptMiddleware };
+module.exports = {
+    createMiddleware,
+};
