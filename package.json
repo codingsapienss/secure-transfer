@@ -1,15 +1,15 @@
 {
   "name": "secure-transfer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Secure hybrid encryption (AES + RSA) for frontend-backend communication.",
   "main": "server.js",
   "scripts": {
     "generate:keys": "node scripts/generate-keys.js",
     "test": "jest"
   },
- "bin": {
-  "secure-transfer": "./cli.js"
-},
+  "bin": {
+    "secure-transfer": "./cli.js"
+  },
   "keywords": [
     "encryption",
     "rsa",
